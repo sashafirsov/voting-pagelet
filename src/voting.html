@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        a{ display: inline-block; width: 3rem; height: 3rem;
+
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='3rem' viewBox='0 0 24 24' width='3rem'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z'/%3E%3C/svg%3E");
+        }
+        #dnCount{   transform: rotate(180deg);
+        }
+        section{ display: flex; flex-wrap: wrap; align-items: center; }
+        h3{ width: 100%; }
+    </style>
+</head>
+<body>
+<section>
+    <h3 id="voteName"></h3>
+    <a id="upCount"     onclick="onVote(1)" title="vote Up"  ></a>
+    <i id="totalCount"></i>
+    <a id="dnCount"     onclick="onVote(-1)" title="vote Down"></a>
+</section>
+<script>
+    const       key = k => `${name}_${k}`
+    ,     urlParams = location.search.substring(1).split("&").filter(p=>p).map( p=>p.split('=') )
+                                     .reduce( (o, pp)=> ({...o, [pp[0]]:pp[1] }), {} )
+    ,          name = ''+urlParams.voteName
+    ,        prefix = key('vote-')
+    ,        client = urlParams.voteName
+    ,       clientKey = `${prefix}${client}`;
+
+    voteName.innerText = name;
+    let v = updateUi();
+
+    function updateUi()
+    {
+        stat = getCounts();
+
+        let v = stat.votes[ clientKey ] * 1 || 0;
+        if( v > 0 ) upCount.innerText = v;
+        if( v < 0 ) dnCount.innerText = v;
+
+        totalCount.innerText = stat.sum;
+        return v;
+    }
+
+
+    function onVote(b)
+    {
+        sessionStorage.setItem( clientKey, v+=b );
+        updateUi();
+    }
+    function getCounts()
+    {
+        let total = 0
+        ,      up = 0
+        ,      dn = 0
+        ,     sum = 0
+        ,   votes = [];
+
+        for( let i=0; i<sessionStorage.length; i++ )
+        {
+            let k = sessionStorage.key(i);
+            if( !k.startsWith(prefix) )
+                continue;
+            let v = sessionStorage.getItem(k)*1 || 0;
+            sum+=v;
+            total += Math.abs(v);
+            if( v<0 )
+                up += v;
+            else
+                dn +=v;
+            votes.push( [ k.substr(prefix.length), v ] );
+        }
+        return { total, up, dn, sum, votes }
+    }
+</script>
+</body>
+</html>

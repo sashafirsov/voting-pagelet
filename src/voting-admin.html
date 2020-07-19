@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        label{ display: block; }
+        input[type=text]{ width: 100%; }
+    </style>
+</head>
+<body>
+<label>                         <input id="voteName" disabled type="text"               /></label>
+<label> Max votes               <input id="maxVotes"          type="number"             /></label>
+<label> Allow Negative votes    <input id="allowNegative"     type="checkbox"           /></label>
+<label> Voting session is open  <input id="isSessionOpen"     type="checkbox" checked   /></label>
+
+<button onclick="saveVotingSession()"   > Save      </button>
+<button onclick="deleteVotingSession()" > Delete    </button>
+<hr/>
+
+<label> Total votes     <input id="totalVotes"  type="number" disabled /></label>
+<label> Up votes        <input id="upVotes"     type="number" disabled /></label>
+<label> Down votes      <input id="dnVotes"     type="number" disabled /></label>
+
+<script>
+    const       key = k => `${name}_${k}`
+    ,   getInputVal = k => window[k].type == 'checkbox' ? window[k].checked : window[k].value
+    ,     urlParams = location.search.substring(1).split("&").filter(p=>p).map( p=>p.split('=') )
+                                     .reduce( (o, pp)=> ({...o, [pp[0]]:pp[1] }), {} )
+    ,   param2field = n => urlParams[n] && ( window[n].type == 'checkbox'
+                                           ? window[n].checked = urlParams[n]
+                                           : window[n].value   = urlParams[n] );
+
+    [...document.querySelectorAll('input')].map( el=>param2field( el.id ) );
+    name = urlParams.voteName;
+    stat = getCounts();
+    totalVotes.value = stat.total;
+    upVotes.value    = stat.up;
+    dnVotes.value    = stat.dn;
+
+    function getCounts()
+    {
+        let total = 0
+            ,      up = 0
+            ,      dn = 0
+            ,     sum = 0
+            ,   votes = [];
+
+        for( let i=0; i<sessionStorage.length; i++ )
+        {
+            let k = sessionStorage.key(i);
+            if( !k.startsWith(prefix) )
+                continue;
+            let v = sessionStorage.getItem(k)*1;
+            sum+=v;
+            total += Math.abs(v);
+            if( v<0 )
+                up += v;
+            else
+                dn +=v;
+            votes.push( [ k.substr(prefix.length), v ] );
+        }
+        return { total, up, dn, sum, votes }
+    }
+    function saveVotingSession()
+    {
+        let save = n => sessionStorage.setItem( key(n), getInputVal(n) );
+        [...document.querySelectorAll('input')].map( el=>save( el.id ) );
+
+    }
+    function deleteVotingSession()
+    {
+
+    }
+</script>
+
+</body>
+</html>

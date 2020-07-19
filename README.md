@@ -1,6 +1,23 @@
-# Polymer App Toolbox - Starter Kit
+# Voting Pagelet
+## Pagelet
+`Pagelet` is a 1-page HTML micro front-end application capable of running as standalone web page or as embedded 
+( on front-end or back-end ) into another page. 
 
-[![Build Status](https://travis-ci.org/Polymer/polymer-starter-kit.svg?branch=master)](https://travis-ci.org/Polymer/polymer-starter-kit)
+There are 2 Voting pagelets: [voting.html](src/voting.html) and [voting-admin.html](src/voting-admin.html)
+
+## Use as Microapplication
+Unlike `microapplication` the `pagelet` does not include the back-end to keep the state. Container could provide the 
+persistence layer enabling the use of pagelet as `microapplication` in context of container.
+
+In Voting page the `sessionStorage` is used for data persistence. 
+[demo/localStorageContainer.html](demo/localStorageContainer.html) hooks to `sessionStorage` and routes the data 
+from there to `localStorage`, which you could replace with another type of data sync like back-end DB via web service.
+
+
+# Polymer App Toolbox - Starter Kit
+is used as bootstrap. The source code comprise the vanilla HTML with embedded JS and CSS.
+
+The `polymer-cli` is used only for build, development runner, and test. It is not as part of deployment code.
 
 This template is a starting point for building apps using a drawer-based
 layout. The layout is provided by `app-layout` elements.

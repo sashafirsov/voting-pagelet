@@ -12,6 +12,7 @@
         }
         section{ display: flex; flex-wrap: wrap; align-items: center; }
         h3{ width: 100%; }
+        .no-bg{ background: none; }
     </style>
 </head>
 <body>
@@ -20,6 +21,7 @@
     <a id="upCount"     onclick="onVote(1)" title="vote Up"  ></a>
     <i id="totalCount"></i>
     <a id="dnCount"     onclick="onVote(-1)" title="vote Down"></a>
+    <a class="no-bg" href="voting-admin.html">&#9966;</a>
 </section>
 <script>
     const       key = k => `${name}_${k}`
@@ -27,15 +29,20 @@
                                      .reduce( (o, pp)=> ({...o, [pp[0]]:pp[1] }), {} )
     ,          name = ''+urlParams.voteName
     ,        prefix = key('vote-')
-    ,        client = urlParams.voteName
+    ,        client = urlParams.voterName
     ,       clientKey = `${prefix}${client}`;
 
     voteName.innerText = name;
     let v = updateUi();
 
+    window.addEventListener('storage', () =>
+    {
+        v = updateUi();
+    });
+
     function updateUi()
     {
-        stat = getCounts();
+        let stat = getCounts();
 
         let v = stat.votes[ clientKey ] * 1 || 0;
         if( v > 0 ) upCount.innerText = v;

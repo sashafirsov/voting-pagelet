@@ -33,11 +33,19 @@
 
     [...document.querySelectorAll('input')].map( el=>param2field( el.id ) );
     name = urlParams.voteName;
-    stat = getCounts();
-    totalVotes.value = stat.total;
-    upVotes.value    = stat.up;
-    dnVotes.value    = stat.dn;
+    prefix = key('vote-')
 
+
+    updateUi();
+    window.addEventListener('storage', updateUi);
+
+    function updateUi()
+    {
+        stat = getCounts();
+        totalVotes.value = stat.total;
+        upVotes.value = stat.up;
+        dnVotes.value = stat.dn;
+    }
     function getCounts()
     {
         let total = 0
@@ -54,7 +62,7 @@
             let v = sessionStorage.getItem(k)*1;
             sum+=v;
             total += Math.abs(v);
-            if( v<0 )
+            if( v>0 )
                 up += v;
             else
                 dn +=v;

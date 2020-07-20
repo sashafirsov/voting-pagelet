@@ -3,12 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Voting pagelet data layer Demo</title>
+    <style>
+        iframe:nth-of-type(4n){ height: 16rem; }
+    </style>
 </head>
 <body>
     <h1>Voting pagelet data layer Demo</h1>
     <p> The code in this page hooks to `sessionStorage` used by <a href="../src/voting.html">voting.html</a> and routes the data
         from there to `localStorage`, which you could be replaced with another type of data sync like back-end DB via web service.
     </p>
-
+    <h3>voteName=1st vote</h3>
+    <iframe src="../src/voting.html?voteName=1st+vote&voterName=Mickey"></iframe>
+    <iframe src="../src/voting.html?voteName=1st+vote&voterName=Mickey"></iframe>
+    <iframe src="../src/voting.html?voteName=1st+vote&voterName=Minnie"></iframe>
+    <iframe src="../src/voting-admin.html?voteName=1st+vote"           ></iframe>
+    <h3>voteName=2nd vote</h3>
+    <iframe src="../src/voting.html?voteName=2nd+vote&voterName=Mickey"></iframe>
+    <iframe src="../src/voting.html?voteName=2nd+vote&voterName=Mickey"></iframe>
+    <iframe src="../src/voting.html?voteName=2nd+vote&voterName=Minnie"></iframe>
+    <iframe src="../src/voting-admin.html?voteName=2nd+vote"           ></iframe>
 </body>
 </html>

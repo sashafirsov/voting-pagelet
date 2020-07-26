@@ -4,12 +4,20 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
-        a{ display: inline-block; width: 3rem; height: 3rem;
-
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='3rem' viewBox='0 0 24 24' width='3rem'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z'/%3E%3C/svg%3E");
+        body{ margin: 0; padding:0; }
+        body>*>*{ padding:1rem; display: flex; justify-content: space-between; width: 100%; align-items:center; }
+        a{  display: inline-flex;
+            width: 4rem;
+            height: 4rem;
+            color: yellow;
+            font-weight: bold; font-size: x-large;
+            justify-content: center;
+            align-items: center;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='4rem' viewBox='0 0 24 24' width='4rem'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z'/%3E%3C/svg%3E");
         }
-        #dnCount{   transform: rotate(180deg);
-        }
+        #dnCount0{  transform:scaleY(-1); color: red; }
+        #dnCount{   transform:scaleY(-1); }
+        #voteName{  background: antiquewhite; width: 100%; }
         section{ display: flex; flex-wrap: wrap; align-items: center; }
         h3{ width: 100%; }
         .no-bg{ background: none; }
@@ -17,11 +25,13 @@
 </head>
 <body>
 <section>
-    <h3 id="voteName"></h3>
-    <a id="upCount"     onclick="onVote(1)" title="vote Up"  ></a>
-    <i id="totalCount"></i>
-    <a id="dnCount"     onclick="onVote(-1)" title="vote Down"></a>
-    <a class="no-bg" href="voting-admin.html">&#9966;</a>
+    <div id="voteName"></div>
+    <div>
+        <a id="upCount"     onclick="onVote(1)" title="vote Up"  ></a>
+        <i id="totalCount"></i>
+        <a id="dnCount0"     onclick="onVote(-1)" title="vote Down"><b id="dnCount" ></b></a>
+<!--        <a class="no-bg" href="voting-admin.html">&#9966;</a>-->
+    </div>
 </section>
 <script>
     const       key = k => `${name}_${k}`
@@ -32,7 +42,7 @@
     ,        client = urlParams.voterName
     ,       clientKey = `${prefix}${client}`;
 
-    voteName.innerText = name;
+    voteName.innerHTML = `<b>${name}</b> as <i>${urlParams.voterName}</i>`;
     let v = updateUi();
 
     window.addEventListener('storage', () =>
@@ -44,9 +54,9 @@
     {
         let stat = getCounts();
 
-        let v = stat.votes[ clientKey ] * 1 || 0;
-        if( v > 0 ) upCount.innerText = v;
-        if( v < 0 ) dnCount.innerText = v;
+        let v = stat.own * 1 || 0;
+        if( v > 0 ) { dnCount.innerText=''; upCount.innerText = v; }
+        if( v < 0 ) { upCount.innerText=''; dnCount.innerText = -1*v; }
 
         totalCount.innerText = stat.sum;
         return v;
@@ -64,6 +74,7 @@
         ,      up = 0
         ,      dn = 0
         ,     sum = 0
+        ,     own = 0
         ,   votes = [];
 
         for( let i=0; i<sessionStorage.length; i++ )
@@ -78,9 +89,11 @@
                 up += v;
             else
                 dn +=v;
+            if( clientKey === k )
+                own = v;
             votes.push( [ k.substr(prefix.length), v ] );
         }
-        return { total, up, dn, sum, votes }
+        return { total, up, dn, sum, votes, own }
     }
 </script>
 </body>

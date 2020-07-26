@@ -4,24 +4,32 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
+        body{ margin: 0 }
+        body>div{ padding-left: 1rem; }
+        #voteName{  background: antiquewhite; padding: 1rem; margin:0; font-weight: bold;border: none; }
         label{ display: block; }
-        input[type=text]{ width: 100%; }
+        input{ display: block; }
+        #votesList b{ display: inline-block; width: 3rem;}
+
     </style>
 </head>
 <body>
-<label>                         <input id="voteName" disabled type="text"               /></label>
-<label> Max votes               <input id="maxVotes"          type="number"             /></label>
-<label> Allow Negative votes    <input id="allowNegative"     type="checkbox"           /></label>
-<label> Voting session is open  <input id="isSessionOpen"     type="checkbox" checked   /></label>
+<h3 id="voteName" ></h3>
+<div>
+    <label> Max votes               <input id="maxVotes"          type="number"             /></label>
+    <label> Allow Negative votes    <input id="allowNegative"     type="checkbox"           /></label>
+    <label> Voting session is open  <input id="isSessionOpen"     type="checkbox" checked   /></label>
 
-<button onclick="saveVotingSession()"   > Save      </button>
-<button onclick="deleteVotingSession()" > Delete    </button>
-<hr/>
+    <button onclick="saveVotingSession()"   > Save      </button>
+    <button onclick="deleteVotingSession()" > Delete    </button>
+    <hr/>
 
-<label> Total votes     <input id="totalVotes"  type="number" disabled /></label>
-<label> Up votes        <input id="upVotes"     type="number" disabled /></label>
-<label> Down votes      <input id="dnVotes"     type="number" disabled /></label>
-
+    <label> Total votes     <input id="totalVotes"  type="number" disabled /></label>
+    <label> Up votes        <input id="upVotes"     type="number" disabled /></label>
+    <label> Down votes      <input id="dnVotes"     type="number" disabled /></label>
+    <hr/>
+    <div id="votesList"></div>
+</div>
 <script>
     const       key = k => `${name}_${k}`
     ,   getInputVal = k => window[k].type == 'checkbox' ? window[k].checked : window[k].value
@@ -33,6 +41,7 @@
 
     [...document.querySelectorAll('input')].map( el=>param2field( el.id ) );
     name = urlParams.voteName;
+    voteName.innerHTML = name;
     prefix = key('vote-')
 
 
@@ -68,6 +77,7 @@
                 dn +=v;
             votes.push( [ k.substr(prefix.length), v ] );
         }
+        votesList.innerHTML = votes.map( v=>`<b>${v[1]}</b><i>${v[0]}</i>`).join('<br/>')
         return { total, up, dn, sum, votes }
     }
     function saveVotingSession()
